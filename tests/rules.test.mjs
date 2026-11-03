@@ -10,13 +10,13 @@ const rules = JSON.parse(text).rules;
 const branch = rules[ROOT];
 const room = branch.rooms.$code;
 
-test('fichier JSON formaté comme dans les dépôts frères', () => {
+test('fichier JSON formaté sur deux espaces', () => {
   assert.equal(text, `${JSON.stringify(JSON.parse(text), null, 2)}\n`);
 });
 
-test('la branche roti existe, la racine est fermée', () => {
+test('projet dédié : le fichier ne contient que la branche roti, tout le reste est fermé', () => {
   assert.equal(ROOT, 'roti');
-  assert.ok(rules.roti);
+  assert.deepEqual(Object.keys(rules).sort(), ['.read', '.write', 'roti']);
   assert.equal(rules['.read'], false);
   assert.equal(rules['.write'], false);
 });
@@ -36,6 +36,13 @@ test('le code de salle des règles correspond à l\'alphabet de l\'outil', () =>
     return out;
   });
   assert.equal(allowed, CODE_ALPHABET);
+});
+
+test('firebase.json et .firebaserc publient ce fichier dans le projet du ROTI', async () => {
+  const config = JSON.parse(await readFile(new URL('../firebase.json', import.meta.url), 'utf8'));
+  assert.deepEqual(config, { database: { rules: 'database.rules.json' } });
+  const rc = JSON.parse(await readFile(new URL('../.firebaserc', import.meta.url), 'utf8'));
+  assert.equal(rc.projects.default, 'roti-vleroy');
 });
 
 test('notes de 1 à 5, commentaires de 1 à 500 caractères, titres de 80 au plus', () => {

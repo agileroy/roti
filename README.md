@@ -27,14 +27,14 @@ Le VPN de l'entreprise (proxy Zscaler) bloque GitHub Pages et Firebase : voter d
 
 ## Architecture
 
-Site statique (HTML/CSS/JavaScript, sans build) publié sur GitHub Pages, polices système, ni CDN ni traceur. Seul service tiers : Firebase Realtime Database (connexion anonyme), dans le projet partagé avec les outils frères.
+Site statique (HTML/CSS/JavaScript, sans build) publié sur GitHub Pages, polices système, ni CDN ni traceur. Seul service tiers : Firebase Realtime Database (connexion anonyme), dans un projet Firebase propre au ROTI (`roti-vleroy`).
 
 - `site/js/roti-core.js` : logique pure (libellés, code de salle, validations, moyenne, répartition, liste « Mes ROTI »), testée avec Node.js ;
 - `site/js/roti-store.js` : actions sur la base (création, purge, vote, commentaire, révélation, réouverture, suppression, présence) ; chaque rôle ne lit que les nœuds qui lui sont permis ;
 - `site/js/firebase-db.js` (seul module qui parle à Firebase), `site/js/memory-db.js` (même interface en mémoire, pour les tests et le mode démo), `site/js/firebase-config.js` ;
 - `site/js/ui.js` : accueil, vue participant et vue animateur ; `site/js/theme.js` : thème clair ou sombre ; `site/js/app.js` : point d'entrée ;
 - `site/vendor/qrcode-generator-1.4.4.js` : QR code de la salle (licence MIT) ;
-- `database.rules.json` : règles de sécurité de la base partagée, branche `roti`. Le fichier doit rester identique dans les dépôts qui partagent encore le projet Firebase ([poker-planning](https://github.com/agileroy/poker-planning), [matrice-competences](https://github.com/agileroy/matrice-competences), [wheel-of-chance](https://github.com/agileroy/wheel-of-chance), [moving-motivators](https://github.com/agileroy/moving-motivators), [roles-responsabilites](https://github.com/agileroy/roles-responsabilites), [scrum-events](https://github.com/agileroy/scrum-events) et celui-ci ; Fournée a son propre projet), et **seul [poker-planning](https://github.com/agileroy/poker-planning) le publie**, automatiquement à chaque push sur sa branche `main`. Toute évolution du fichier commun (y compris la branche `roti`) se fait donc d'abord là-bas, puis se recopie ici.
+- `database.rules.json` : règles de sécurité de la base, limitées à la branche `roti` (projet désigné par `firebase.json` et `.firebaserc`). Elles sont publiées automatiquement à chaque push sur `main`, après les tests, par le job `rules` du workflow (Firebase CLI avec le compte de service du secret `FIREBASE_SERVICE_ACCOUNT`) ; sans ce secret, le job est sauté avec un avertissement et les règles sont à publier à la main dans la console Firebase.
 
 Données de la branche `roti` :
 
@@ -57,7 +57,7 @@ python3 -m http.server 8765 --directory site      # puis http://localhost:8765/?
 
 Les tests de `tests/roti-store.test.mjs` jouent des parcours à plusieurs participants sur une base en mémoire soumise à `database.rules.json`, évalué par un petit simulateur de règles (`tests/rules-sim.mjs`) : anonymat, votes cachés avant la révélation, participant malveillant, purge.
 
-Chaque push sur `main` lance les tests puis publie `site/` sur GitHub Pages ; un test en échec bloque la publication.
+Chaque push sur `main` lance les tests, publie les règles Firebase puis publie `site/` sur GitHub Pages ; un test en échec bloque les deux publications.
 
 ## Méthode
 
