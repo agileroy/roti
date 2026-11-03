@@ -1,7 +1,7 @@
 # site-publication Specification
 
 ## Purpose
-TBD - created by archiving change creer-roti. Update Purpose after archive.
+Publication sur GitHub Pages, interface (langue, appareils, thèmes), service tiers limité à Firebase, mode démo et règles de sécurité partagées.
 
 ## Requirements
 

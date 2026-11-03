@@ -1,7 +1,7 @@
 # roti-results Specification
 
 ## Purpose
-TBD - created by archiving change creer-roti. Update Purpose after archive.
+La vue animateur : suivi en direct sans dévoiler les votes, révélation, moyenne, répartition, commentaires et réouverture des votes.
 
 ## Requirements
 

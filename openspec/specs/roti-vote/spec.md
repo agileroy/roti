@@ -1,7 +1,7 @@
 # roti-vote Specification
 
 ## Purpose
-TBD - created by archiving change creer-roti. Update Purpose after archive.
+La vue participant : note en étoiles et libellés, commentaire facultatif, modification jusqu'à la révélation, anonymat et dissociation entre note et commentaire.
 
 ## Requirements
 

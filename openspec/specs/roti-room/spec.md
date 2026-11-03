@@ -1,7 +1,7 @@
 # roti-room Specification
 
 ## Purpose
-TBD - created by archiving change creer-roti. Update Purpose after archive.
+Les salles de ROTI : création par l'animateur, code et QR code, arrivée des participants, présence, liste « Mes ROTI », suppression et purge après 30 jours.
 
 ## Requirements
 
