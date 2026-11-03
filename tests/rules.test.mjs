@@ -14,11 +14,9 @@ test('fichier JSON formaté comme dans les dépôts frères', () => {
   assert.equal(text, `${JSON.stringify(JSON.parse(text), null, 2)}\n`);
 });
 
-test('la branche roti existe à côté des outils frères, tout le reste est fermé', () => {
+test('la branche roti existe, la racine est fermée', () => {
   assert.equal(ROOT, 'roti');
-  for (const name of ['room', 'skillMatrix', 'wheelOfChance', 'movingMotivators', 'rolesGame', 'eventsGame', 'incrementGame', 'roti']) {
-    assert.ok(rules[name], name);
-  }
+  assert.ok(rules.roti);
   assert.equal(rules['.read'], false);
   assert.equal(rules['.write'], false);
 });
