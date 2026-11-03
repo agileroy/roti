@@ -1,0 +1,9 @@
+{
+  "name": "roti",
+  "private": true,
+  "type": "module",
+  "description": "ROTI (Return On Time Invested) pour clore une réunion ou un atelier, sans publicité",
+  "scripts": {
+    "test": "node --test"
+  }
+}

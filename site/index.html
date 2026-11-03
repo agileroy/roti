@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>ROTI</title>
+  <meta name="description" content="ROTI (Return On Time Invested) : chacun note la réunion de 1 à 5 étoiles depuis son téléphone, anonymement, sans publicité.">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <script>
+    // Thème appliqué avant l'affichage : choix mémorisé, sinon réglage du système.
+    (function () {
+      var theme = null;
+      try { theme = localStorage.getItem('roti.theme'); } catch (e) {}
+      if (theme !== 'light' && theme !== 'dark') {
+        theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.dataset.theme = theme;
+    })();
+  </script>
+  <link rel="stylesheet" href="app.css?v=__VERSION__">
+  <script type="module" src="js/theme.js?v=__VERSION__"></script>
+  <script type="module" src="js/app.js?v=__VERSION__"></script>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="star" viewBox="0 0 24 24"><path d="M12 2.6l2.9 6 6.6.8-4.9 4.6 1.3 6.5L12 17.3l-5.9 3.2 1.3-6.5L2.5 9.4l6.6-.8z"/></symbol>
+  </svg>
+
+  <header class="topbar">
+    <a class="brand" href="./" id="brand-link">
+      <span class="brand-mark" aria-hidden="true"><svg><use href="#star"/></svg></span>ROTI
+    </a>
+    <div class="topbar-actions">
+      <span class="chip chip-demo" id="demo-chip" hidden>Démo</span>
+      <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Passer en thème sombre" title="Passer en thème sombre">
+        <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+        <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <p class="banner" id="banner" role="status" hidden></p>
+
+  <main>
+    <p class="loading" id="loading">Connexion…</p>
+
+    <!-- Accueil -->
+    <section class="screen" id="screen-home" hidden>
+      <div class="home-intro">
+        <h1>Combien vous a rapporté le temps passé&nbsp;?</h1>
+        <p class="muted">En fin de réunion, chacun note de 1 à 5 étoiles depuis son téléphone et peut laisser un commentaire. Tout est anonyme, et rien n'apparaît avant que l'animateur révèle les résultats.</p>
+      </div>
+      <p class="notice is-error" id="home-error" role="alert" hidden></p>
+      <div class="home-grid">
+        <form class="panel" id="create-form" novalidate>
+          <h2>Animer un ROTI</h2>
+          <label class="field"><span>Titre de la réunion <span class="muted">(facultatif)</span></span>
+            <input id="title-input" name="title" maxlength="80" autocomplete="off" placeholder="Sprint Review du 3 novembre">
+          </label>
+          <button type="submit" class="button button-primary button-large" id="create-submit">Créer un ROTI</button>
+          <p class="hint is-error" id="create-error" role="alert"></p>
+        </form>
+        <form class="panel" id="join-form" novalidate>
+          <h2>Voter</h2>
+          <label class="field">Code affiché par l'animateur
+            <input id="code-input" name="code" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="6" placeholder="ABCD" class="code-input">
+          </label>
+          <button type="submit" class="button button-ghost button-large" id="join-submit">Rejoindre</button>
+          <p class="hint is-error" id="join-error" role="alert"></p>
+        </form>
+      </div>
+      <section class="panel mine-panel" id="mine-panel" aria-labelledby="mine-title" hidden>
+        <div class="panel-head">
+          <h2 id="mine-title">Mes ROTI</h2>
+          <span class="muted small">Gardés dans ce navigateur, supprimés après 30 jours</span>
+        </div>
+        <ul class="mine-list" id="mine-list"></ul>
+      </section>
+    </section>
+
+    <!-- Vue participant -->
+    <section class="screen vote-screen" id="screen-vote" hidden>
+      <header class="vote-head">
+        <p class="eyebrow">ROTI · <span id="vote-code"></span></p>
+        <h1 id="vote-title"></h1>
+      </header>
+
+      <section class="panel" aria-labelledby="rate-title">
+        <h2 id="rate-title">Ce que vous a rapporté le temps passé</h2>
+        <div class="stars" id="stars" role="radiogroup" aria-labelledby="rate-title"></div>
+        <p class="star-label" id="star-label" aria-live="polite">&nbsp;</p>
+        <ol class="legend" id="legend"></ol>
+        <p class="hint" id="vote-status" role="status"></p>
+      </section>
+
+      <form class="panel" id="comment-form" novalidate>
+        <label class="field" for="comment-input"><span><strong>Un commentaire&nbsp;?</strong> <span class="muted">(facultatif)</span></span></label>
+        <textarea id="comment-input" rows="3" maxlength="500" placeholder="Ce qui vous a plu, ce qui manquait…"></textarea>
+        <div class="comment-actions">
+          <span class="muted small" id="comment-count">500 caractères restants</span>
+          <span class="spacer"></span>
+          <button type="button" class="button button-ghost" id="comment-remove" hidden>Retirer</button>
+          <button type="submit" class="button button-primary" id="comment-submit">Envoyer</button>
+        </div>
+        <p class="hint" id="comment-status" role="status"></p>
+      </form>
+
+      <p class="anon-note muted small">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        Anonyme : ni votre nom ni votre identité ne sont demandés, et votre note et votre commentaire sont enregistrés séparément. Personne, pas même l'animateur, ne peut les relier.
+      </p>
+
+      <section id="vote-results" class="results-wrap" hidden aria-label="Résultats"></section>
+    </section>
+
+    <!-- Vue animateur -->
+    <section class="screen host-screen" id="screen-host" hidden>
+      <header class="host-head">
+        <div>
+          <p class="eyebrow" id="host-date"></p>
+          <h1 id="host-title"></h1>
+        </div>
+        <div class="host-head-actions">
+          <a class="button button-ghost" href="./" id="host-home">Mes ROTI</a>
+          <button type="button" class="button button-ghost button-danger" id="host-delete">Supprimer</button>
+        </div>
+      </header>
+
+      <div class="host-grid">
+        <section class="panel join-panel" aria-labelledby="join-title">
+          <h2 id="join-title">Pour voter</h2>
+          <div class="qr" id="qr"></div>
+          <p class="join-url">Ouvrez <strong id="join-url"></strong></p>
+          <p class="join-code-label muted">code</p>
+          <p class="join-code" id="join-code"></p>
+        </section>
+
+        <section class="panel live-panel" aria-labelledby="live-title">
+          <h2 id="live-title" class="visually-hidden">Votes</h2>
+          <div class="counters">
+            <p class="counter"><strong id="count-votes">0</strong><span id="count-votes-label">vote</span></p>
+            <p class="counter"><strong id="count-comments">0</strong><span id="count-comments-label">commentaire</span></p>
+            <p class="counter counter-muted"><strong id="count-online">0</strong><span id="count-online-label">connecté</span></p>
+          </div>
+          <p class="live-hint muted" id="live-hint">Les notes et les commentaires restent cachés jusqu'à la révélation.</p>
+          <div class="live-actions">
+            <button type="button" class="button button-primary button-large" id="reveal">Révéler</button>
+            <button type="button" class="button button-ghost" id="reopen" hidden>Rouvrir les votes</button>
+          </div>
+          <section id="host-results" class="results-wrap" hidden aria-label="Résultats"></section>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <dialog class="dialog" id="confirm-dialog" aria-labelledby="confirm-title">
+    <form method="dialog">
+      <h2 id="confirm-title"></h2>
+      <p id="confirm-text"></p>
+      <div class="dialog-actions">
+        <button class="button button-ghost" value="cancel">Annuler</button>
+        <button class="button button-primary button-danger-solid" value="ok" id="confirm-ok">Confirmer</button>
+      </div>
+    </form>
+  </dialog>
+
+  <template id="results-template">
+    <div class="results">
+      <div class="average">
+        <p class="average-value"><strong data-ref="average"></strong><span>/ 5</span></p>
+        <div class="average-stars" data-ref="average-stars" aria-hidden="true"></div>
+        <p class="average-label" data-ref="average-label"></p>
+        <p class="muted" data-ref="average-count"></p>
+      </div>
+      <div class="distribution">
+        <h3>Répartition</h3>
+        <ul class="bars" data-ref="bars"></ul>
+      </div>
+      <div class="comments">
+        <h3 data-ref="comments-title">Commentaires</h3>
+        <ul class="comment-list" data-ref="comments"></ul>
+        <p class="muted" data-ref="no-comment" hidden>Aucun commentaire.</p>
+      </div>
+    </div>
+  </template>
+</body>
+</html>

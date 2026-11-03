@@ -1,0 +1,23 @@
+## 1. Logique et base
+
+- [x] 1.1 Écrire `site/js/roti-core.js` : libellés des 5 notes, code de salle (alphabet, génération, normalisation, validation), titre, commentaire, moyenne arrondie et écrite à la française, libellé le plus proche, répartition, identifiant de commentaire aléatoire, liste « Mes ROTI » (ajout, tri, limite de 50, retrait). Vérification : `tests/roti-core.test.mjs` couvre les exemples chiffrés de `roti-results` (3,8 et 4,3) et les cas limites (aucun vote, codes invalides, titre de 80 caractères).
+- [x] 1.2 Reprendre `site/js/firebase-db.js` et `site/js/memory-db.js` de `scrum-increment` (clés de démo `roti.*`), avec un journal des lectures et un contrôle facultatif par les règles dans le serveur en mémoire.
+- [x] 1.3 Écrire `site/js/roti-store.js` : création (purge des salles expirées, réservation du code), suivi de la salle selon le rôle, vote, commentaire (écriture groupée `mine` + `claimed` + `comments`), retrait du commentaire, révélation, réouverture, suppression, présence, résumé d'un ROTI pour « Mes ROTI ». Vérification : `tests/roti-store.test.mjs` joue plusieurs clients sur un serveur en mémoire soumis aux règles.
+
+## 2. Règles Firebase
+
+- [x] 2.1 Ajouter la branche `roti` à `database.rules.json` (copie du fichier des outils frères, autres branches inchangées). Vérification : `tests/rules.test.mjs` (branches des outils frères présentes, branche autonome, alphabet des codes, notes 1 à 5, commentaires 1 à 500 caractères, purge à 30 jours, lectures réservées) et un simulateur de règles (`tests/rules-sim.mjs`) qui rejoue les scénarios d'anonymat et de participant malveillant. Fait le 3 novembre 2026 : `npm test` au vert (34 tests), dont 11 parcours sous les règles simulées.
+- [x] 2.2 Recopier `database.rules.json` dans les 7 autres dépôts (`poker-planning`, `matrice-competences`, `wheel-of-chance`, `moving-motivators`, `roles-responsabilites`, `scrum-events`, `scrum-increment`) et y lancer `npm test`. Vérification : fichiers identiques octet pour octet, tests au vert dans chaque dépôt. Fait le 3 novembre 2026 : tests au vert dans les 7 dépôts, poussés sur `main`.
+
+## 3. Interface
+
+- [x] 3.1 Écrire `site/index.html`, `site/app.css`, `site/js/theme.js` et `site/img/favicon.svg` : en-tête et bascule de thème mémorisée, accueil, vue participant, vue animateur, boîte de confirmation ; variables de couleur des outils frères et couleur d'étoile ; mise en page projetée et téléphone. Vérification : aucune ressource externe dans le HTML et le CSS.
+- [x] 3.2 Écrire `site/js/ui.js` et `site/js/app.js` : accueil (créer, rejoindre, Mes ROTI), vue participant (étoiles, libellés, légende, commentaire, résultats après révélation), vue animateur (code, adresse, QR code, compteurs, révéler, moyenne, répartition, commentaires, rouvrir, supprimer), bannière de connexion perdue, mode démo. Vérification : liste de contrôle 4.1.
+
+## 4. Vérification et publication
+
+- [x] 4.1 Jouer en mode démo dans un navigateur automatisé : création avec titre, deux participants qui votent, changent d'avis et commentent, compteurs de l'animateur, révélation sur tous les onglets, réouverture et retardataire, Mes ROTI (rouvrir, supprimer), lien animateur ouvert par un participant, commentaire contenant du HTML. Vérification : aucune erreur dans la console, résultats conformes aux scénarios. Fait le 3 novembre 2026 (Playwright, Chrome) : parcours complet sans erreur, aucune requête hors du site en mode démo, message « service injoignable » vérifié en bloquant Firebase.
+- [x] 4.2 Vérifier l'affichage à 360, 390, 1280 et 1440 px, en thème clair et sombre. Vérification : captures sans défilement horizontal. Fait le 3 novembre 2026.
+- [ ] 4.3 Ajouter `package.json`, `.github/workflows/pages.yml` (repris des outils frères), `README.md` (fonctionnement, architecture, règles partagées, développement, méthode OpenSpec), pousser sur `main` et vérifier la publication sur https://agileroy.github.io/roti/.
+- [ ] 4.4 Ajouter la carte « ROTI » dans la section « En atelier » de https://agileroy.github.io/outils/ (dépôt `agileroy.github.io`) et mettre à jour le compteur d'outils.
+- [ ] 4.5 Faire publier les règles dans la console Firebase par l'auteur, puis faire un ROTI réel. Vérification : validation explicite de l'auteur.
