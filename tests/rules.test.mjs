@@ -38,6 +38,13 @@ test('le code de salle des règles correspond à l\'alphabet de l\'outil', () =>
   assert.equal(allowed, CODE_ALPHABET);
 });
 
+test('firebase.json publie ce fichier dans le projet partagé', async () => {
+  const config = JSON.parse(await readFile(new URL('../firebase.json', import.meta.url), 'utf8'));
+  assert.deepEqual(config, { database: { rules: 'database.rules.json' } });
+  const rc = JSON.parse(await readFile(new URL('../.firebaserc', import.meta.url), 'utf8'));
+  assert.equal(rc.projects.default, 'poker-planning-vleroy');
+});
+
 test('notes de 1 à 5, commentaires de 1 à 500 caractères, titres de 80 au plus', () => {
   const note = room.votes.$uid['.validate'];
   for (const n of [1, 2, 3, 4, 5]) assert.ok(note.includes(`newData.val() === ${n}`), String(n));

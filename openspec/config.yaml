@@ -17,8 +17,9 @@ context: |
   Hébergement : site statique sur GitHub Pages (https://agileroy.github.io/roti/), sans serveur à maintenir.
   Temps réel : Firebase Realtime Database (offre gratuite, connexion anonyme) dans le projet partagé avec
   poker-planning, matrice-competences, wheel-of-chance, moving-motivators, roles-responsabilites, scrum-events
-  et scrum-increment ; database.rules.json doit rester identique dans ces 8 dépôts, et se publie à la main
-  dans la console Firebase. Aucun autre service tiers (ni police web, ni CDN, ni traceur, ni publicité).
+  qui ne sont pas encore déplacés dans leur propre projet (Fournée/scrum-increment l'est) ; database.rules.json
+  doit rester identique dans ces dépôts, et seul ce dépôt le publie, par GitHub Actions après les tests.
+  Aucun autre service tiers (ni police web, ni CDN, ni traceur, ni publicité).
   N'utiliser que HTTPS (port 443).
   Le VPN de l'entreprise (proxy Zscaler) bloque GitHub Pages et Firebase : les participants votent depuis
   leur téléphone, via le QR code affiché par l'animateur.
