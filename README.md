@@ -34,7 +34,7 @@ Site statique (HTML/CSS/JavaScript, sans build) publié sur GitHub Pages, police
 - `site/js/firebase-db.js` (seul module qui parle à Firebase), `site/js/memory-db.js` (même interface en mémoire, pour les tests et le mode démo), `site/js/firebase-config.js` ;
 - `site/js/ui.js` : accueil, vue participant et vue animateur ; `site/js/theme.js` : thème clair ou sombre ; `site/js/app.js` : point d'entrée ;
 - `site/vendor/qrcode-generator-1.4.4.js` : QR code de la salle (licence MIT) ;
-- `database.rules.json` : règles de sécurité de la base partagée, branche `roti`. Le fichier doit rester identique dans les dépôts qui partagent encore le projet Firebase ([poker-planning](https://github.com/agileroy/poker-planning), [matrice-competences](https://github.com/agileroy/matrice-competences), [wheel-of-chance](https://github.com/agileroy/wheel-of-chance), [moving-motivators](https://github.com/agileroy/moving-motivators), [roles-responsabilites](https://github.com/agileroy/roles-responsabilites), [scrum-events](https://github.com/agileroy/scrum-events) et celui-ci ; Fournée a son propre projet), et **seul ce dépôt le publie** : à chaque push sur `main`, après les tests, le job `rules` du workflow le déploie dans le projet partagé `poker-planning-vleroy` (Firebase CLI, compte de service du secret `FIREBASE_SERVICE_ACCOUNT`, projet désigné par `firebase.json` et `.firebaserc`). Toute évolution du fichier commun se fait donc ici, puis se recopie dans les autres dépôts.
+- `database.rules.json` : règles de sécurité de la base partagée, branche `roti`. Le fichier doit rester identique dans les dépôts qui partagent encore le projet Firebase ([poker-planning](https://github.com/agileroy/poker-planning), [matrice-competences](https://github.com/agileroy/matrice-competences), [wheel-of-chance](https://github.com/agileroy/wheel-of-chance), [moving-motivators](https://github.com/agileroy/moving-motivators), [roles-responsabilites](https://github.com/agileroy/roles-responsabilites), [scrum-events](https://github.com/agileroy/scrum-events) et celui-ci ; Fournée a son propre projet), et **seul [poker-planning](https://github.com/agileroy/poker-planning) le publie**, automatiquement à chaque push sur sa branche `main`. Toute évolution du fichier commun (y compris la branche `roti`) se fait donc d'abord là-bas, puis se recopie ici.
 
 Données de la branche `roti` :
 
@@ -57,7 +57,7 @@ python3 -m http.server 8765 --directory site      # puis http://localhost:8765/?
 
 Les tests de `tests/roti-store.test.mjs` jouent des parcours à plusieurs participants sur une base en mémoire soumise à `database.rules.json`, évalué par un petit simulateur de règles (`tests/rules-sim.mjs`) : anonymat, votes cachés avant la révélation, participant malveillant, purge.
 
-Chaque push sur `main` lance les tests, publie les règles du projet partagé puis publie `site/` sur GitHub Pages ; un test en échec bloque les deux publications.
+Chaque push sur `main` lance les tests puis publie `site/` sur GitHub Pages ; un test en échec bloque la publication.
 
 ## Méthode
 

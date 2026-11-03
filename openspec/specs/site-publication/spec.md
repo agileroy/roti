@@ -51,12 +51,12 @@ Avec `?demo` dans l'adresse, le site SHALL fonctionner sans Firebase : les ongle
 - **THEN** les trois onglets affichent les mêmes résultats
 
 ### Requirement: Règles de sécurité partagées
-La base Firebase est partagée avec les outils frères : `database.rules.json` SHALL contenir une branche `roti`, sans modifier les autres branches, et SHALL rester identique dans les 8 dépôts qui partagent la base.
+La base Firebase est partagée avec les outils frères : `database.rules.json` SHALL contenir une branche `roti`, sans modifier les autres branches, et SHALL rester identique dans tous les dépôts qui partagent encore la base ; seul `poker-planning` le publie.
 
 #### Scenario: Fichier recopié
 - **GIVEN** la branche `roti` ajoutée dans ce dépôt
-- **WHEN** on compare `database.rules.json` des 8 dépôts
-- **THEN** les 8 fichiers sont identiques
+- **WHEN** on compare `database.rules.json` des dépôts qui partagent la base
+- **THEN** les fichiers sont identiques
 
 ### Requirement: Écritures contrôlées par la base
 Les règles de la branche `roti` SHALL n'autoriser que l'animateur à modifier, révéler, rouvrir et supprimer sa salle (ou n'importe qui après 30 jours). Un participant SHALL n'écrire que sa propre note (entier de 1 à 5), son propre commentaire (1 à 500 caractères) et sa présence, et seulement tant que les votes sont ouverts. Les codes et les titres SHALL être validés.
