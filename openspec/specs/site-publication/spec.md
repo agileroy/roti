@@ -50,14 +50,6 @@ Avec `?demo` dans l'adresse, le site SHALL fonctionner sans Firebase : les ongle
 - **WHEN** les deux participants votent et l'animateur révèle
 - **THEN** les trois onglets affichent les mêmes résultats
 
-### Requirement: Règles de sécurité partagées
-La base Firebase est partagée avec les outils frères : `database.rules.json` SHALL contenir une branche `roti`, sans modifier les autres branches, et SHALL rester identique dans tous les dépôts qui partagent encore la base ; seul `poker-planning` le publie.
-
-#### Scenario: Fichier recopié
-- **GIVEN** la branche `roti` ajoutée dans ce dépôt
-- **WHEN** on compare `database.rules.json` des dépôts qui partagent la base
-- **THEN** les fichiers sont identiques
-
 ### Requirement: Écritures contrôlées par la base
 Les règles de la branche `roti` SHALL n'autoriser que l'animateur à modifier, révéler, rouvrir et supprimer sa salle (ou n'importe qui après 30 jours). Un participant SHALL n'écrire que sa propre note (entier de 1 à 5), son propre commentaire (1 à 500 caractères) et sa présence, et seulement tant que les votes sont ouverts. Les codes et les titres SHALL être validés.
 
@@ -73,3 +65,19 @@ Les règles de la branche `roti` SHALL rendre les notes et les commentaires lisi
 - **GIVEN** une salle révélée
 - **WHEN** l'animateur tente de lire le lien entre les participants et les commentaires
 - **THEN** les règles refusent la lecture
+
+### Requirement: Projet Firebase dédié
+Le ROTI SHALL utiliser un projet Firebase qui lui est propre (`roti-vleroy`), qu'aucun autre outil n'utilise. `database.rules.json` SHALL ne contenir que la branche `roti`, et tout le reste de la base SHALL être fermé en lecture comme en écriture.
+
+#### Scenario: Fichier commun recopié par erreur
+- **GIVEN** un `database.rules.json` qui contient aussi la branche d'un autre outil
+- **WHEN** les tests s'exécutent
+- **THEN** un test échoue et ni les règles ni le site ne sont publiés
+
+### Requirement: Déploiement automatique des règles
+À chaque push sur `main`, après la réussite des tests, GitHub Actions SHALL publier `database.rules.json` dans le projet du ROTI, avec un compte de service gardé en secret (`FIREBASE_SERVICE_ACCOUNT`), puis seulement publier le site. Sans secret, le déploiement des règles SHALL être sauté avec un avertissement, sans empêcher la publication du site.
+
+#### Scenario: Règles modifiées
+- **GIVEN** un push sur `main` qui modifie `database.rules.json` et dont les tests réussissent
+- **WHEN** le workflow s'exécute
+- **THEN** les nouvelles règles sont actives dans le projet du ROTI, sans action dans la console
