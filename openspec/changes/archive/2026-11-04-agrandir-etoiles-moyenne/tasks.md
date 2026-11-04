@@ -6,4 +6,4 @@
 ## 2. Vérification et publication
 
 - [x] 2.1 Rejouer le parcours de bout en bout en mode démo. Vérification : aucune erreur dans la console, moyennes identiques à avant (3,5 et 3,3). Fait le 4 novembre 2026.
-- [ ] 2.2 Pousser sur `main`. Vérification : workflow réussi et affichage vérifié sur le site publié.
+- [x] 2.2 Pousser sur `main`. Vérification : workflow réussi et affichage vérifié sur le site publié. Fait le 4 novembre 2026 : salle NGMY (2,5 / 5), étoiles de 80 px pour un chiffre de 38 px, demi-étoile remplie.
