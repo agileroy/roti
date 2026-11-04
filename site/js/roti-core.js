@@ -114,6 +114,17 @@ export function nearestNote(value) {
   return Math.min(MAX_NOTE, Math.max(MIN_NOTE, Math.floor(value + 0.5)));
 }
 
+/** Écart entre deux étoiles de la moyenne, en fraction de la taille d'une étoile (même valeur que app.css). */
+export const STAR_GAP = 0.06;
+
+/** Largeur remplie de la rangée d'étoiles de la moyenne, en % : étoiles entières (avec leur écart) puis fraction de la suivante. */
+export function filledPercent(avg) {
+  if (avg === null || avg === undefined) return 0;
+  const whole = Math.min(MAX_NOTE, Math.max(0, Math.floor(avg)));
+  const width = whole * (1 + STAR_GAP) + (whole < MAX_NOTE ? avg - whole : 0);
+  return Math.min(100, (width / (MAX_NOTE + (MAX_NOTE - 1) * STAR_GAP)) * 100);
+}
+
 /** Répartition de 5 à 1 : [{ note, count, percent }], percent arrondi à l'entier. */
 export function distribution(notes) {
   const total = notes.length;

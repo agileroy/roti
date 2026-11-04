@@ -4,7 +4,7 @@
 import {
   LABELS, MAX_NOTE, STATUS, COMMENT_MAX, labelFor, isValidNote, normalizeCode, isValidCode, notesOf, average,
   formatAverage, nearestNote, distribution, commentsOf, connectedCount, plural, parseMine, addMine, removeMine,
-  formatDate, commentLength,
+  formatDate, commentLength, filledPercent,
 } from './roti-core.js?v=__VERSION__';
 
 const $ = (id) => document.getElementById(id);
@@ -103,11 +103,9 @@ export function renderResults(container, { votes, comments }) {
 
   ref('average').textContent = formatAverage(avg);
   const starsBox = ref('average-stars');
-  const fullWidth = MAX_NOTE * 32 + (MAX_NOTE - 1) * 2;
-  const filled = avg === null ? 0 : Math.floor(avg) * 34 + (avg % 1) * 32;
   starsBox.append(starRow(MAX_NOTE, 0, 'star-row'));
   const on = starRow(MAX_NOTE, MAX_NOTE, 'star-row star-row-on');
-  on.style.width = `${Math.min(fullWidth, filled)}px`;
+  on.style.width = `${filledPercent(avg)}%`;
   starsBox.append(on);
   ref('average-label').textContent = avg === null ? 'Aucun vote' : labelFor(nearestNote(avg));
   ref('average-count').textContent = `sur ${plural(notes.length, 'vote')}`;

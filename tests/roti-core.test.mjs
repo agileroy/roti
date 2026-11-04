@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
   LABELS, labelFor, isValidNote, normalizeCode, isValidCode, generateCode, CODE_ALPHABET, generateCommentId,
   isValidCommentId, validateTitle, normalizeTitle, validateComment, normalizeComment, COMMENT_MAX, TITLE_MAX,
-  notesOf, average, formatAverage, nearestNote, distribution, commentsOf, connectedCount, plural,
+  notesOf, average, formatAverage, nearestNote, distribution, filledPercent, STAR_GAP, commentsOf, connectedCount, plural,
   parseMine, addMine, removeMine, MINE_MAX,
 } from '../site/js/roti-core.js';
 
@@ -122,4 +122,13 @@ test('Mes ROTI : liste mémorisée, triée, sans doublon, limitée', () => {
   let many = [];
   for (let i = 0; i < MINE_MAX + 10; i += 1) many = addMine(many, generateCode(), i);
   assert.ok(many.length <= MINE_MAX);
+});
+
+test('étoiles de la moyenne remplies en proportion, quelle que soit leur taille', () => {
+  const total = 5 + 4 * STAR_GAP;
+  assert.equal(filledPercent(null), 0);
+  assert.equal(filledPercent(5), 100);
+  assert.ok(Math.abs(filledPercent(2.5) - ((2 * (1 + STAR_GAP) + 0.5) / total) * 100) < 1e-9);
+  assert.ok(Math.abs(filledPercent(1) - ((1 + STAR_GAP) / total) * 100) < 1e-9);
+  assert.ok(filledPercent(2.5) > filledPercent(2) && filledPercent(2.5) < filledPercent(3));
 });

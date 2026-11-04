@@ -248,20 +248,22 @@ input:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 
 
 /* ---------------------------------------------------------------- Résultats */
 
-.results-wrap { animation: reveal 0.45s ease; }
+.results-wrap { container-type: inline-size; animation: reveal 0.45s ease; }
 @keyframes reveal { from { opacity: 0; transform: translateY(8px); } }
-.results { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 18px 28px; }
+.results { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px 32px; align-items: start; }
 .vote-screen .results { grid-template-columns: minmax(0, 1fr); }
 .vote-screen .results-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px; }
+.results-summary { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
 
-.average { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; text-align: center; }
-.average-value { display: flex; align-items: baseline; gap: 6px; }
-.average-value strong { font-size: clamp(3rem, 2.4rem + 3vw, 5rem); line-height: 1; font-weight: 800; font-variant-numeric: tabular-nums; }
-.average-value span { font-size: 1.4rem; color: var(--muted); font-weight: 650; }
-.average-stars { position: relative; display: inline-flex; gap: 2px; }
-.average-stars .star-row { display: flex; gap: 2px; }
-.average-stars .star-icon { width: 32px; height: 32px; }
+/* Étoiles de la moyenne : plus grandes que le chiffre ; l'écart (6 % d'une étoile) est repris dans ui.js (STAR_GAP). */
+.average { container-type: inline-size; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
+.average-stars { --avg-star: 56px; --avg-star: min(80px, 17cqi); position: relative; display: inline-flex; margin-bottom: 4px; }
+.average-stars .star-row { display: flex; gap: calc(var(--avg-star) * 0.06); }
+.average-stars .star-icon { width: var(--avg-star); height: var(--avg-star); }
 .average-stars .star-row-on { position: absolute; inset: 0 auto 0 0; overflow: hidden; white-space: nowrap; }
+.average-value { display: flex; align-items: baseline; gap: 6px; }
+.average-value strong { font-size: clamp(2.2rem, 1.8rem + 1.6vw, 3.4rem); line-height: 1; font-weight: 800; font-variant-numeric: tabular-nums; }
+.average-value span { font-size: 1.2rem; color: var(--muted); font-weight: 650; }
 .average-label { font-weight: 650; font-size: 1.05rem; }
 
 .distribution { display: flex; flex-direction: column; gap: 10px; }
@@ -274,8 +276,8 @@ input:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 
 .bar-count { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); font-weight: 600; white-space: nowrap; }
 .bar-count strong { color: var(--text); }
 
-.comments { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 10px; }
-.comment-list { columns: 3 260px; column-gap: 12px; }
+.comments { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.comment-list { columns: 2 220px; column-gap: 12px; }
 .comment-list li {
   break-inside: avoid; margin-bottom: 12px; padding: 12px 14px; border-radius: 12px;
   background: var(--surface-2); border-left: 4px solid var(--star); white-space: pre-wrap; overflow-wrap: anywhere;
@@ -285,6 +287,11 @@ input:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 
 
 @media (max-width: 860px) {
   .host-grid { grid-template-columns: minmax(0, 1fr); }
+  .results { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Zone des résultats étroite (tablette, écran partagé) : moyenne, répartition et commentaires en une colonne. */
+@container (max-width: 640px) {
   .results { grid-template-columns: minmax(0, 1fr); }
 }
 

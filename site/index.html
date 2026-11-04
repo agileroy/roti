@@ -166,15 +166,17 @@
 
   <template id="results-template">
     <div class="results">
-      <div class="average">
-        <p class="average-value"><strong data-ref="average"></strong><span>/ 5</span></p>
-        <div class="average-stars" data-ref="average-stars" aria-hidden="true"></div>
-        <p class="average-label" data-ref="average-label"></p>
-        <p class="muted" data-ref="average-count"></p>
-      </div>
-      <div class="distribution">
-        <h3>Répartition</h3>
-        <ul class="bars" data-ref="bars"></ul>
+      <div class="results-summary">
+        <div class="average">
+          <div class="average-stars" data-ref="average-stars" aria-hidden="true"></div>
+          <p class="average-value"><strong data-ref="average"></strong><span>/ 5</span></p>
+          <p class="average-label" data-ref="average-label"></p>
+          <p class="muted" data-ref="average-count"></p>
+        </div>
+        <div class="distribution">
+          <h3>Répartition</h3>
+          <ul class="bars" data-ref="bars"></ul>
+        </div>
       </div>
       <div class="comments">
         <h3 data-ref="comments-title">Commentaires</h3>
